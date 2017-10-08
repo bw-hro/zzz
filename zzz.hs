@@ -6,7 +6,7 @@ import Text.Printf(printf)
 -} 
 zzz :: Double -> Double -> Double -> Int -> Double
 zzz v a z j | j == 0 = v
-            | otherwise = zzz (v * z + a) a z (j - 1) 
+            | otherwise = zzz (v * z + a) a z (j - 1)
 
 {-|
   The 'zz' function shows the compound interest effect on an anual base. It uses the 'zzz' function.
@@ -23,12 +23,18 @@ z v a z j = putStrLn "COMPOUND INTEREST CALCULATOR\n"
                               \anual saving rate:%0.f\n\
                               \average return:%1.3f\n\
                               \duration:%d\n\
-                              \final capital:%.0f\n" v a z j (zzz v a z j))
-            >> putStrLn "details:" 
-            >> putStrLn (s $ zz v a z j)
-  where s [] = ""
-        s ((j,v):xs) = printf "% 3d | % 7.0f" j v ++ "\n" ++ s xs
+                              \final capital:%.0f\n" v a z j final)
+            >> putStrLn "details:"
+            >> putStrLn (s details)
+  where s []         = ""
+        s ((j,v):xs) = printf format j v ++ "\n" ++ s xs
+        final        = zzz v a z j
+        details      =  zz v a z j
+        maxResult    = maximum [r | (_,r) <- details]
+        format       = "%" ++ (show $ digCnt 1 j) ++ "d | "
+                       ++ "%" ++ (show $ digCnt 1 $ round maxResult) ++ ".0f"
+        digCnt ds n  | n >= 10   = digCnt (ds + 1) (n `div` 10)
+                     | otherwise = ds
 
 
-
-sample = z 10000 1000 1.03 5
+sample = z 8000 700 1.04 5
